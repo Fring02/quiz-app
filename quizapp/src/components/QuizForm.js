@@ -82,14 +82,7 @@ export default function QuizForm(props) {
                     quizResults: Array.from(Object.values(answers).map(ans => ans.answer)), isVisible: true
                 });
             }}>
-                <h5><Form.Check type="switch" id="custom-switch" label={<span title="Click on each question to speak it aloud.">Speak Question</span>}
-                    checked={enableSpeech}
-                    onChange={() => {
-                        {
-                            setEnableSpeech(!enableSpeech)
-                        }
-                    }}
-                    size="lg" style={{ 'position': 'absolute', 'top': 100, 'right': width }} />
+                <h5>
                    </h5>
                 {!validate() ?
                     <h5 key={answeredSoFar} className='alert alert-info text-wrap w-25 text-center' style={{ 'position': 'fixed', 'bottom': 10, 'right': 0 }}>
@@ -105,12 +98,47 @@ export default function QuizForm(props) {
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>{questions_file[quizId]["name"]}</Breadcrumb.Item>
                 </Breadcrumb>
-                <button className='btn btn-primary btn-lg' onClick={(e) => {
-                    e.preventDefault();
-                    navigate(-1);
-                }}>Go back</button>
-                <h2 className='mb-5 text-center'>{questions_file[quizId]["name"]}</h2>
-                <h3 className='mb-5'>Questions:</h3>
+                <div className="d-flex justify-content-between">
+                    <div className="d-flex">
+                        <button className='btn btn-primary mt-3'
+                        style={{'margin': '2px'}} 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate(-1);
+                        }}>Go back</button>
+                        <Button variant="danger" className='btn d-block btn-secondary mt-3' 
+                        style={{'margin': '2px'}} onClick={() => {
+                                const answer = window.confirm("Are you sure you would like to reset the quiz? This will erase your answers");
+                                if (!answer) {
+                                    return;
+                                }
+                                setAnswers({});
+                                setAnsweredSoFar(0);
+                                document.querySelectorAll('input[type="radio"]').forEach((radio) => {
+                                    radio.checked = false;
+                                });
+                                document.querySelectorAll('input[type="text"]').forEach((input) => {
+                                    input.value = '';
+                                });
+                            }}
+                            >
+                                Reset
+                        </Button>
+                    </div>
+                    
+                    <Form.Check type="switch" id="custom-switch" label={<span title="Click on each question to speak it aloud.">Speak Questions</span>}
+                    checked={enableSpeech}
+                    onChange={() => {
+                        {
+                            setEnableSpeech(!enableSpeech)
+                        }
+                    }}
+                    size="lg" style={{ 'margin-left': '50px', 'padding-top': '25px' }} />
+                    
+                </div>
+                
+                <h4 className='text-center'><b>{questions_file[quizId]["name"]}</b></h4>
+                <h4 className='mb-3'>Questions:</h4>
                 {shuffled_questions.map((q, id) => (
                     <>
                         <div key={id} className={`question card pt-3 pb-3 ps-3 pe-3 ${selectedQuestion === id ? 'selected-question' : ''}`} style={{
@@ -149,7 +177,7 @@ export default function QuizForm(props) {
 
                             {q.type === "multiple_choice" || q.type === "true_false" ?
                                 Object.keys(q.answer_choices).map((a) => (
-                                    <div className='answerChoices'>
+                                    <div className='answerChoices' style={{'padding-left': '30px'}}>
                                         <input type="radio" name={id} className='p-2' id={a + '_' + id} value={q.answer_choices[a]} onChange={(e) => {
                                             answers[id] = { question: a + "_" + id, answer: e.target.value };
                                             setAnswers(answers);
@@ -160,7 +188,8 @@ export default function QuizForm(props) {
                                     </div>
                                 ))
                                 :
-                                <input className="form-control" type="text" name={id} id={id} placeholder='answer' 
+                                <input className="form-control" type="text" name={id} id={id} placeholder='answer'
+                                style={{'margin-left': '30px', 'width': '90%'}} 
                                 onChange={(e) => {
                                     if (e.target.value) {
                                         answers[id] = { question: id, answer: e.target.value.toLowerCase() };
@@ -180,23 +209,7 @@ export default function QuizForm(props) {
                 ))}
                 <div className="d-flex justify-content-between">
                     <Button type="submit" className='btn d-block btn-primary mt-3' disabled={!validate()}>Submit</Button>
-                    <Button variant="danger" className='btn d-block btn-secondary mt-3' onClick={() => {
-                        const answer = window.confirm("Are you sure you would like to reset the quiz? This will erase your answers");
-                        if (!answer) {
-                            return;
-                        }
-                        setAnswers({});
-                        setAnsweredSoFar(0);
-                        document.querySelectorAll('input[type="radio"]').forEach((radio) => {
-                            radio.checked = false;
-                        });
-                        document.querySelectorAll('input[type="text"]').forEach((input) => {
-                            input.value = '';
-                        });
-                    }}
-                    >
-                        Reset
-                    </Button>
+                    
                 </div>
             </Form> :
             <AnswerFeedback data={data} />
