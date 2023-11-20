@@ -100,7 +100,7 @@ export default function QuizForm(props) {
                 </Breadcrumb>
                 <div className="d-flex justify-content-between">
                     <div className="d-flex">
-                        <button className='btn btn-primary mt-3'
+                        <button className='btn btn-outline-primary mt-3'
                         style={{'margin': '2px'}} 
                         onClick={(e) => {
                             e.preventDefault();
@@ -208,7 +208,7 @@ export default function QuizForm(props) {
 
                 ))}
                 <div className="d-flex justify-content-between">
-                    <Button type="submit" className='btn d-block btn-primary mt-3' disabled={!validate()}>Submit</Button>
+                    <Button type="submit" className='btn d-block btn-success mt-3' disabled={!validate()}>Submit</Button>
                     
                 </div>
             </Form> :
